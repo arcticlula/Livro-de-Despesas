@@ -101,15 +101,23 @@ export default {
 		async getAddressData(addressData, placeResultData, id) {
 			console.log(addressData, placeResultData, id);
 			this.fornecedor.nome = placeResultData.name;
-			// this.fornecedor.morada = placeResultData.formatted_address;
-			this.fornecedor.morada =
-				addressData.route +
-				(addressData.street_number ? ", " + addressData.street_number : "");
-			this.fornecedor.codPostal = addressData.postal_code;
-			this.fornecedor.localidade = addressData.locality;
-			this.fornecedor.pais = addressData.country;
-			this.fornecedor.telefone = placeResultData.international_phone_number;
-			this.fornecedor.website = placeResultData.website;
+			this.fornecedor.morada = addressData.route
+				? addressData.route +
+				  (addressData.street_number ? ", " + addressData.street_number : "")
+				: "";
+			this.fornecedor.codPostal = addressData.postal_code
+				? addressData.postal_code
+				: "";
+			this.fornecedor.localidade = addressData.locality
+				? addressData.locality
+				: "";
+			this.fornecedor.pais = addressData.country ? addressData.country : "";
+			this.fornecedor.telefone = placeResultData.international_phone_number
+				? placeResultData.international_phone_number
+				: "";
+			this.fornecedor.website = placeResultData.website
+				? placeResultData.website
+				: "";
 			await this.$nextTick();
 			this.$refs.fornecedornome.update(this.fornecedor.nome);
 		},

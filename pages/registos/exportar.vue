@@ -73,6 +73,10 @@ export default {
 					value: "data"
 				},
 				{
+					label: "Nr Factura",
+					value: "fornecedorFatura"
+				},
+				{
 					label: "Fornecedor",
 					value: "fornecedor"
 				},
@@ -89,12 +93,16 @@ export default {
 					value: "quant"
 				},
 				{
+					label: "Taxa IVA",
+					value: "taxaIva"
+				},
+				{
 					label: "Preço",
 					value: "preco"
 				},
 				{
 					label: "IVA",
-					value: "taxaIva"
+					value: "iva"
 				},
 				{
 					label: "Preço Total",
@@ -110,11 +118,13 @@ export default {
 						referencia: item.referencia,
 						data: this.$moment(item.data).format("YYYY-MM-DD"),
 						fornecedor: item.fornecedor,
+						fornecedorFatura: item.fornecedorFatura,
 						descricao: item.descricao,
 						descricaoTexto: item.descricaoTexto,
 						quant: item.quant,
-						preco: parseFloat(item.preco).toFixed(2),
 						taxaIva: item.taxaIva * 100 + "%",
+						preco: parseFloat(item.preco).toFixed(2),
+						iva: parseFloat(item.iva).toFixed(2),
 						precoTotal: parseFloat(item.precoTotal).toFixed(2)
 					})
 				]

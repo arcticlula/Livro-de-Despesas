@@ -31,7 +31,7 @@ exports.registerUser = functions.auth.user().onCreate(async (user) => {
   return null
 });
 
-exports.getCSV = functions.https.onRequest(async (request, response) => {
+/* exports.getCSV = functions.https.onRequest(async (request, response) => {
   const { Parser } = require("json2csv");
   console.log(request)
   const fields = [
@@ -78,6 +78,6 @@ exports.getCSV = functions.https.onRequest(async (request, response) => {
   catch (err) {
     console.error(err);
   }
-})
+}) */
 
 

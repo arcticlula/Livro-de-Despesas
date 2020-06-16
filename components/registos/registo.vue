@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<b-row>
-			<b-col cols="12" md="6">
+			<b-col cols="12" md="8">
 				<label for="registo-data">Data:</label>
 				<b-form-datepicker
 					id="registo-data"
@@ -13,13 +13,13 @@
 				></b-form-datepicker>
 				<p>Preencher com data mais antiga possível.</p>
 			</b-col>
-			<b-col cols="12" md="6">
+			<b-col cols="12" md="4">
 				<label for="registo-ref">Referência:</label>
 				<b-form-input readonly id="registo-ref" size="sm" v-model="registo.referencia"></b-form-input>
 			</b-col>
 		</b-row>
 		<b-row class="mt-2">
-			<b-col cols="12">
+			<b-col cols="9">
 				<label for="registo-forn">Fornecedor:</label>
 				<b-input-group>
 					<b-form-input
@@ -53,6 +53,12 @@
 						<b-form-select-option :value="null" disabled>-- Fornecedor --</b-form-select-option>
 					</template>
 				</b-form-select>-->
+			</b-col>
+			<b-col cols="3">
+				<label for="registo-forn-nr">Nr. Fatura</label>
+				<b-input-group size="sm">
+					<b-form-input id="registo-forn-nr" size="sm" v-model="registo.fornecedorFatura"></b-form-input>
+				</b-input-group>
 			</b-col>
 		</b-row>
 		<b-row class="mt-2">
@@ -102,24 +108,24 @@
 			</b-col>
 		</b-row>
 		<b-row class="mt-2">
-			<b-col class="quant" cols="4" md="3">
+			<b-col class="quant" cols="4" md="2" lg="2">
 				<label for="registo-quant">Quant.</label>
 				<b-input-group size="sm" append="u.">
 					<b-form-input type="number" id="registo-quant" size="sm" v-model="registo.quant"></b-form-input>
 				</b-input-group>
 			</b-col>
-			<b-col class="preco" cols="4" md="3">
+			<b-col class="preco" cols="4" md="3" lg="3">
 				<label for="registo-preco">Preço</label>
 				<b-input-group size="sm" append="€">
 					<b-form-input type="number" id="registo-preco" size="sm" v-model.number="registo.preco"></b-form-input>
 				</b-input-group>
 			</b-col>
-			<b-col class="iva" cols="4" md="3">
-				<label for="registo-iva">IVA</label>
+			<b-col class="taxaIva" cols="4" md="2" lg="2">
+				<label for="registo-taxaIva">Taxa IVA</label>
 				<b-input-group size="sm" append="%">
 					<b-form-select
 						type="number"
-						id="registo-iva"
+						id="registo-taxaIva"
 						size="sm"
 						v-model="registo.taxaIva"
 						:options="iva"
@@ -127,7 +133,13 @@
 					/>
 				</b-input-group>
 			</b-col>
-			<b-col class="total" cols="12" md="3">
+			<b-col class="iva" cols="6" md="3" lg="2">
+				<label for="registo-iva">IVA</label>
+				<b-input-group size="sm" append="€">
+					<b-form-input type="number" readonly id="registo-iva" size="sm" v-model="ivaValor"></b-form-input>
+				</b-input-group>
+			</b-col>
+			<b-col class="total" cols="6" md="4" lg="3">
 				<label for="registo-total">Total</label>
 				<b-input-group size="sm" append="€">
 					<b-form-input type="number" readonly id="registo-total" size="sm" v-model="total"></b-form-input>
@@ -144,10 +156,10 @@ export default {
 	data() {
 		return {
 			iva: [
-				{ text: "Isenta: 0", value: 0 },
-				{ text: "Reduzida: 6", value: 0.06 },
-				{ text: "Intermédia: 13", value: 0.13 },
-				{ text: "Normal: 23", value: 0.23 }
+				{ text: "0", value: 0 },
+				{ text: "6", value: 0.06 },
+				{ text: "13", value: 0.13 },
+				{ text: "23", value: 0.23 }
 			]
 		};
 	},
@@ -155,10 +167,16 @@ export default {
 		...mapState("registos", ["registo"]),
 		...mapState("fornecedores", ["fornecedores"]),
 		...mapState("servicos", ["servicos"]),
+		ivaValor() {
+			let preco = parseFloat(this.registo.preco);
+			let res = (preco * parseFloat(this.registo.taxaIva)).toFixed(2);
+			this.registo.iva = res;
+			return res;
+		},
 		total() {
 			if (!this.registo.preco) return 0;
-			let preco = parseInt(this.registo.preco);
-			let res = preco + preco * parseFloat(this.registo.taxaIva);
+			let preco = parseFloat(this.registo.preco);
+			let res = (preco + preco * parseFloat(this.registo.taxaIva)).toFixed(2);
 			this.registo.precoTotal = res;
 			return res;
 		}
@@ -227,7 +245,7 @@ export default {
 		padding-right: 1rem * 0.5;
 	}
 }
-.iva {
+.taxaIva {
 	@media (max-width: 992px) {
 		padding-left: 1rem * 0.5;
 	}
@@ -235,11 +253,21 @@ export default {
 		padding-right: 1rem * 0.5;
 	}
 }
-.total {
+.iva {
 	@media (max-width: 768px) {
+		padding-right: 1rem * 0.5;
 		margin-top: 1rem * 0.75;
 	}
 	@media (min-width: 768px) and (max-width: 992px) {
+		padding-left: 1rem * 0.5;
+	}
+}
+
+.total {
+	@media (max-width: 992px) {
+		margin-top: 1rem * 0.75;
+	}
+	@media (max-width: 768px) {
 		padding-left: 1rem * 0.5;
 	}
 }

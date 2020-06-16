@@ -28,12 +28,14 @@ export const actions = {
       data: new Date(),
       referencia: rootState.counter.registos,
       fornecedor: "",
+      fornecedorFatura: "",
       fornecedorRef: 0,
       descricao: "",
       descricaoRef: 0,
       descricaoTexto: "",
       quant: 1,
       preco: "",
+      iva: "",
       precoTotal: "",
       taxaIva: null
     };

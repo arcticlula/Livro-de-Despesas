@@ -13,7 +13,7 @@ export default ({ store, redirect, route }) => {
     if (route.name == 'index' || route.name == 'auth') redirect("/registos");
   }
   auth.listen(user => {
-    // console.log(user)
+    console.log(user)
     store.commit('setUser', user)
     if (!isEmpty(user) && route.name == 'auth') redirect("/registos");
     if (isEmpty(user)) redirect("/");

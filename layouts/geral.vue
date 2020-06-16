@@ -3,6 +3,10 @@
 		<b-navbar variant="dark" type="dark" class="sticky-top flex-md-nowrap p-0 shadow">
 			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3">{{path}}</a>
 			<b-navbar-nav class="ml-auto px-3">
+				<b-nav-item>
+					<b-avatar variant="primary" :src="user.photoUrl"></b-avatar>
+					<!-- <span>{{user.name}}</span> -->
+				</b-nav-item>
 				<b-nav-item class="text-nowrap">
 					<!-- <span>Sign out</span> -->
 					<b-btn @click="signOut" type="gray" variant="dark">Sign out</b-btn>
@@ -111,12 +115,13 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
 	methods: {
 		...mapActions(["signOut"])
 	},
 	computed: {
+		...mapState(["user"]),
 		path() {
 			switch (this.$nuxt.$route.name) {
 				case "registos":
