@@ -3,7 +3,7 @@ import VueNoty from 'vuejs-noty'
 import 'vuejs-noty/dist/vuejs-noty.css'
 
 Vue.use(VueNoty, {
-	timeout: 1000,
-	progressBar: true,
-	layout: 'topRight'
+  timeout: 1500,
+  progressBar: true,
+  layout: 'topRight'
 })

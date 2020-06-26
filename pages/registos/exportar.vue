@@ -44,6 +44,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { saveData } from "@/utils/utils";
 
 export default {
 	layout: "geral",
@@ -130,26 +131,15 @@ export default {
 				]
 			};
 
-			let saveData = (function() {
-				var a = document.createElement("a");
-				document.body.appendChild(a);
-				a.style = "display: none";
-				return function(data, fileName) {
-					var json = JSON.stringify(data),
-						blob = new Blob([data], { type: "octet/stream" }),
-						url = window.URL.createObjectURL(blob);
-					a.href = url;
-					a.download = fileName;
-					a.click();
-					window.URL.revokeObjectURL(url);
-				};
-			})();
-
 			try {
 				const json2csvParser = new Parser(opts);
-				const csv = json2csvParser.parse(res);
-				saveData(csv, "report.csv");
-				console.log(csv);
+				if (res.length > 0) {
+					const csv = json2csvParser.parse(res);
+					saveData(csv, "report.csv");
+				} else
+					this.$noty.warning(
+						`Não existe nenhum registo entre ${this.dataL} e ${this.dataH}!`
+					);
 			} catch (err) {
 				console.error(err);
 			}

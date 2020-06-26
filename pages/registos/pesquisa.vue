@@ -61,6 +61,10 @@ export default {
 		]),
 		async getRegistos() {
 			let res = await this.getRegistosQuery(this.query);
+			if (res.length == 0)
+				$nuxt.$noty.warning(
+					"Não existe nenhum registo para esta pesquisa!"
+				);
 		},
 		cancelar() {
 			this.modal.show = false;
@@ -75,8 +79,10 @@ export default {
 			this.setRegisto(registo);
 		}
 	},
-	mounted() {
-		this.getLast10();
+	async fetch({ app, store }) {
+		let res = await store.dispatch("registos/getLast10");
+		if (res.length == 0)
+			$nuxt.$noty.warning("Ainda não foi criado nenhum registo!");
 	},
 	components: {
 		pesquisa,

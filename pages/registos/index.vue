@@ -22,6 +22,7 @@ export default {
 		...mapActions("registos", ["createRegisto"]),
 		async criarRegisto() {
 			await this.createRegisto();
+			this.$noty.success("Registo criado com sucesso!");
 		}
 	},
 	async fetch({ app, store, redirect }) {

@@ -33,7 +33,7 @@ export default {
   router: {
     middleware: 'router-auth'
   },
-  plugins: ['~/plugins/vue-moment.js', '~/plugins/firebase.js'],
+  plugins: ['~/plugins/noty.js', '~/plugins/vue-moment.js', '~/plugins/firebase.js'],
 
   /*
   ** Nuxt.js dev-modules

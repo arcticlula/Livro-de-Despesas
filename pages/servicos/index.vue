@@ -18,9 +18,6 @@ import servico from "@/components/servicos/servico";
 import { mapActions } from "vuex";
 export default {
 	layout: "geral",
-	data() {
-		return {};
-	},
 	async fetch({ app, store, redirect }) {
 		try {
 			await store.dispatch("getCounter");
@@ -30,6 +27,7 @@ export default {
 	methods: {
 		...mapActions("servicos", ["createServico"]),
 		async criarServico() {
+			this.$noty.success("Serviço criado com sucesso!");
 			await this.createServico();
 		}
 	},

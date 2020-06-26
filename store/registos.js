@@ -1,6 +1,6 @@
 import { db, auth } from "@/plugins/firebase"
 import Transform from 'firebase-firestore-lite/dist/Transform.js';
-import { isNumber } from "@/utils/is"
+import { isNumber } from "@/utils/utils"
 
 export const state = () => ({
   modal: { show: false },

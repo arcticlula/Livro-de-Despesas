@@ -27,6 +27,7 @@ export default {
 		async criarFornecedor() {
 			await this.createFornecedor();
 			document.getElementById("fornecedor-nome").value = "";
+			this.$noty.success("Fornecedor criado com sucesso!");
 		}
 	},
 	async fetch({ app, store, redirect }) {

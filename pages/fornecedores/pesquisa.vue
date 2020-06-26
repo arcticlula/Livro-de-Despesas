@@ -59,14 +59,22 @@ export default {
 		]),
 		async getFornecedores() {
 			let res = await this.getFornecedoresByName(this.name);
+			if (res.length == 0)
+				$nuxt.$noty.warning(
+					"Não existe nenhum fornecedor para esta pesquisa!"
+				);
+			console.log(res);
 		},
 		cancelar() {
 			this.modal.show = false;
 		},
-		gravarFornecedor() {
-			this.fornecedor.nome = document.getElementById("fornecedor-nome").value;
+		async gravarFornecedor() {
+			this.fornecedor.nome = document.getElementById(
+				"fornecedor-nome"
+			).value;
 			this.modal.show = false;
-			this.updateFornecedor();
+			await this.updateFornecedor();
+			this.$noty.success("Fornecedor actualizado com sucesso!");
 		},
 		async editar(fornecedor) {
 			this.modal.show = true;
@@ -75,8 +83,10 @@ export default {
 			document.getElementById("fornecedor-nome").value = fornecedor.nome;
 		}
 	},
-	mounted() {
-		this.getLast10();
+	async fetch({ app, store }) {
+		let res = await store.dispatch("fornecedores/getLast10");
+		if (res.length == 0)
+			$nuxt.$noty.warning("Ainda não foi criado nenhum fornecedor!");
 	},
 	components: {
 		pesquisa,

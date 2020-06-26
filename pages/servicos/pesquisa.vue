@@ -59,6 +59,10 @@ export default {
 		]),
 		async getServicos() {
 			let res = await this.getServicosQuery(this.query);
+			if (res.length == 0)
+				$nuxt.$noty.warning(
+					"Não existe nenhum serviço para esta pesquisa!"
+				);
 		},
 		cancelar() {
 			this.modal.show = false;
@@ -73,8 +77,10 @@ export default {
 			this.setServico(servico);
 		}
 	},
-	mounted() {
-		this.getLast10();
+	async fetch({ app, store }) {
+		let res = await store.dispatch("servicos/getLast10");
+		if (res.length == 0)
+			$nuxt.$noty.warning("Ainda não foi criado nenhum serviço!");
 	},
 	components: {
 		pesquisa,
