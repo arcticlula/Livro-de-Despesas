@@ -30,10 +30,8 @@ export default {
 		}
 	},
 	async fetch({ app, store, redirect }) {
-		try {
-			await store.dispatch("getCounter");
-		} catch (error) {}
-		await store.dispatch("fornecedores/init");
+		await store.dispatch("getCounter");
+		store.dispatch("fornecedores/init");
 	},
 	components: { fornecedor }
 };

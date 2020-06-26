@@ -4,7 +4,7 @@
 			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3">{{path}}</a>
 			<b-navbar-nav class="ml-auto px-3">
 				<b-nav-item>
-					<b-avatar variant="primary" :src="user.photoUrl"></b-avatar>
+					<b-avatar variant="primary" v-if="user.photoUrl" :src="user.photoUrl"></b-avatar>
 					<!-- <span>{{user.name}}</span> -->
 				</b-nav-item>
 				<b-nav-item class="text-nowrap">

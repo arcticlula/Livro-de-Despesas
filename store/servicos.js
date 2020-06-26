@@ -33,21 +33,18 @@ export const actions = {
     };
   },
   async createServico({ state, dispatch }) {
-    // const tx = db.transaction();
+    const tx = db.transaction();
     let servico = state.servico
     servico.descricaoL = servico.descricao.toLowerCase()
-    // tx.set(`/dados/servicos/${auth.user.localId}/${fid()}`, servico);
-    // tx.update(`counter/${auth.user.localId}`, { servicos: new Transform('increment', 1) });
-    // try {
-    //   await tx.commit();
-    //   await dispatch("getCounter", null, { root: true })
-    // } catch (e) {
+    let [res] = await tx.get([`counter/${auth.user.localId}`]);
+    servico.referencia = res.servicos;
+    tx.add(`/dados/servicos/${auth.user.localId}`, servico);
+    tx.update(`counter/${auth.user.localId}`, { servicos: new Transform('increment', 1) });
+    try {
+      await tx.commit();
+    } catch (e) {
+    }
 
-    // }
-    await db.reference(`dados/servicos/${auth.user.localId}`).add(servico);
-    await db.reference(`counter/${auth.user.localId}`).update({
-      servicos: new Transform('increment', 1)
-    })
     await dispatch("getCounter", null, { root: true })
     dispatch("init")
   },
@@ -56,15 +53,15 @@ export const actions = {
     servico.descricaoL = servico.descricao.toLowerCase()
     let path = servico.__path__
     delete servico.__path__
-    await db.reference(path).update(servico);
+    await db.ref(path).update(servico);
     await dispatch("getLast10")
   },
   async getServicos(context) {
-    let { documents } = await db.reference(`dados/servicos/${auth.user.localId}`).list();
+    let { documents } = await db.ref(`dados/servicos/${auth.user.localId}`).list();
     context.commit('setServicos', documents)
   },
   async getServicosQuery(context, descricao) {
-    const servicos = db.reference(`dados/servicos/${auth.user.localId}`);
+    const servicos = db.ref(`dados/servicos/${auth.user.localId}`);
     let obj = {
       where: [
         ['descricaoL', '>=', descricao.toLowerCase()],
@@ -74,34 +71,19 @@ export const actions = {
     if (isNumber(descricao)) {
       obj = {
         where: [
-          ['referencia', '==', descricao]
-          // ['referencia', '>=', descricao],
-          // ['referencia', '<', descricao + '\uf8ff']
+          ['referencia', '==', parseInt(descricao)]
         ]
       }
     }
-    try {
-      const results = await servicos.query(obj).run()
-      context.commit("setServicos", results)
-      console.log(results)
-      return results
-    }
-    catch{
-      context.commit("setServicos", [])
-      return []
-    }
+    const results = await servicos.query(obj).run()
+    context.commit("setServicos", results)
+    return results
+
   },
   async getLast10({ commit }) {
-    const servicos = db.reference(`dados/servicos/${auth.user.localId}`);
-    console.log(servicos)
-    try {
-      const results = await servicos.query().orderBy('referencia', "desc").limit(10).run();
-      commit("setServicos", results)
-      return results
-    }
-    catch {
-      commit("setServicos", [])
-      return []
-    }
+    const servicos = db.ref(`dados/servicos/${auth.user.localId}`);
+    const results = await servicos.query().orderBy('referencia', "desc").limit(10).run();
+    commit("setServicos", results)
+    return results
   }
 }

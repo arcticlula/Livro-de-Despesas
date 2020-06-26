@@ -209,7 +209,6 @@ export default {
 			let options = this.fornecedores;
 			for (let i = 0; i < options.length; i++) {
 				if (options[i].nome == val) {
-					console.log(options[i]);
 					this.registo.fornecedor = options[i].nome;
 					this.registo.fornecedorRef = options[i].numFornecedor;
 					break;
@@ -220,7 +219,6 @@ export default {
 			let options = this.servicos;
 			for (let i = 0; i < options.length; i++) {
 				if (options[i].descricao == val) {
-					console.log(options[i]);
 					this.registo.descricao = options[i].descricao;
 					this.registo.descricaoRef = options[i].referencia;
 					this.registo.descricaoTexto = options[i].descricaoTexto;

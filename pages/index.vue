@@ -29,18 +29,8 @@
 import { mapState, mapActions } from "vuex";
 export default {
 	layout: "login",
-	computed: {},
-	async fetch({ app, store }) {
-		// app.router.push({
-		// 	name: "registos"
-		// });
-		// console.log();
-		// await store.dispatch("incRegistos");
-		// await store.dispatch("incServicos");
-		// await store.dispatch("getCounter");
-	},
 	methods: {
-		...mapActions(["signIn", "signInRedirect"]),
+		...mapActions(["signIn"]),
 		async login() {
 			await this.signIn();
 		}

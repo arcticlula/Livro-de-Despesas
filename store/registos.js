@@ -17,7 +17,6 @@ export const mutations = {
     state.registo = { ...data, __path__: data.__meta__.path };
   },
   setRegistos(state, data) {
-    console.log(data)
     state.registos = data;
   }
 }
@@ -41,23 +40,19 @@ export const actions = {
     };
   },
   async createRegisto({ state, dispatch }) {
+    const tx = db.transaction();
     let registo = state.registo
     registo.fornecedorL = registo.fornecedor.toLowerCase()
     registo.data = new Date(registo.data).toISOString()
-    // const tx = db.transaction();
-    // tx.set(`/dados/registos/${auth.user.localId}/${fid()}`, registo);
-    // tx.update(`counter/${auth.user.localId}`, { registos: new Transform('increment', 1) });
-    // try {
-    //   await tx.commit();
-    //   await dispatch("getCounter", null, { root: true })
-    // } catch (e) {
+    let [res] = await tx.get([`counter/${auth.user.localId}`]);
+    registo.referencia = res.registos;
+    tx.add(`/dados/registos/${auth.user.localId}`, registo);
+    tx.update(`counter/${auth.user.localId}`, { registos: new Transform('increment', 1) });
+    try {
+      await tx.commit();
+    } catch (e) {
+    }
 
-    // }
-    console.log(registo)
-    await db.reference(`dados/registos/${auth.user.localId}`).add(registo);
-    await db.reference(`counter/${auth.user.localId}`).update({
-      registos: new Transform('increment', 1)
-    })
     await dispatch("getCounter", null, { root: true })
     dispatch("init")
   },
@@ -67,30 +62,22 @@ export const actions = {
     registo.data = new Date(registo.data).toISOString()
     let path = registo.__path__
     delete registo.__path__
-    await db.reference(path).update(registo);
+    await db.ref(path).update(registo);
     await dispatch("getLast10")
   },
   async exportarRegistos({ commit }, { dataL, dataH }) {
-    const registos = db.reference(`dados/registos/${auth.user.localId}`);
+    const registos = db.ref(`dados/registos/${auth.user.localId}`);
     let obj = {
       where: [
       ]
     }
     if (dataL) obj.where.push(['data', '>=', new Date(dataL).toISOString()])
     if (dataH) obj.where.push(['data', '<=', new Date(dataH).toISOString()])
-    console.log(obj)
-    try {
-      const results = await registos.query(obj).run()
-      return results
-    }
-    catch (error) {
-      return []
-    }
-    // let res = await this.$axios.$get(`https://us-central1-livro-despesas.cloudfunctions.net/getCSV?dataL=${dataL}&dataH=${dataH}`)
-    // console.log(res)
+    const results = await registos.query(obj).run()
+    return results
   },
   async getRegistosQuery({ commit }, registo) {
-    const registos = db.reference(`dados/registos/${auth.user.localId}`);
+    const registos = db.ref(`dados/registos/${auth.user.localId}`);
     let obj = {
       where: [
         ['fornecedorL', '>=', registo.toLowerCase()],
@@ -107,27 +94,14 @@ export const actions = {
         ]
       }
     }
-    try {
-      const results = await registos.query(obj).run()
-      commit("setRegistos", results)
-      return results
-    }
-    catch{
-      commit("setRegistos", [])
-      return []
-    }
+    const results = await registos.query(obj).run()
+    commit("setRegistos", results)
+    return results
   },
   async getLast10({ commit }) {
-    const registos = db.reference(`dados/registos/${auth.user.localId}`);
-    console.log(registos)
-    try {
-      const results = await registos.query().orderBy('referencia', "desc").limit(10).run();
-      commit("setRegistos", results)
-      return results
-    }
-    catch {
-      commit("setRegistos", [])
-      return []
-    }
+    const registos = db.ref(`dados/registos/${auth.user.localId}`);
+    const results = await registos.query().orderBy('referencia', "desc").limit(10).run();
+    commit("setRegistos", results)
+    return results
   }
 }

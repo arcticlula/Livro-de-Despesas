@@ -25,10 +25,8 @@ export default {
 		}
 	},
 	async fetch({ app, store, redirect }) {
-		try {
-			await store.dispatch("getCounter");
-		} catch (error) {}
-		await store.dispatch("registos/init");
+		await store.dispatch("getCounter");
+		store.dispatch("registos/init");
 	},
 	components: {
 		registo

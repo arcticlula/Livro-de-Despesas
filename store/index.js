@@ -4,7 +4,7 @@ import Transform from 'firebase-firestore-lite/dist/Transform.js';
 export const strict = false
 
 export const state = () => ({
-  user: null,
+  user: {},
   counter: { registos: 1, fornecedores: 1, servicos: 1 }
 })
 
@@ -23,25 +23,25 @@ export const mutations = {
 
 export const actions = {
   async incRegistos({ commit }) {
-    let res = await db.reference(`counter/${auth.user.localId}`).update({
+    let res = await db.ref(`counter/${auth.user.localId}`).update({
       registos: new Transform('increment', 1)
     })
     commit("setCounter", res)
   },
   async incFornecedores({ commit }) {
-    let res = await db.reference(`counter/${auth.user.localId}`).update({
+    let res = await db.ref(`counter/${auth.user.localId}`).update({
       fornecedores: new Transform('increment', 1)
     })
     commit("setCounter", res)
   },
   async incServicos({ commit }) {
-    let res = await db.reference(`counter/${auth.user.localId}`).update({
+    let res = await db.ref(`counter/${auth.user.localId}`).update({
       servicos: new Transform('increment', 1)
     })
     commit("setCounter", res)
   },
   async getCounter({ commit }) {
-    let res = await db.reference(`counter/${auth.user.localId}`).get();
+    let res = await db.ref(`counter/${auth.user.localId}`).get();
     commit('setCounter', res)
   },
   async signIn() {
